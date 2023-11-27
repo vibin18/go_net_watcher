@@ -26,6 +26,12 @@ func main() {
 		panic(err)
 	}
 
+	engine := html.New("html", ".html")
+	engine.Reload(true)
+	engine.Debug(true)
+
+	web := fiber.New(fiber.Config{Views: engine})
+
 	app := netwatcher.AppConfig{
 		NetworkDeviceMap: make(map[string]string),
 		MappedList:       make([]netwatcher.Mapping, 0),
@@ -50,12 +56,6 @@ func main() {
 		}
 
 	}()
-
-	engine := html.New("html", ".html")
-	engine.Reload(true)
-	engine.Debug(true)
-
-	web := fiber.New(fiber.Config{Views: engine})
 
 	web.Get("/", home)
 	log.Fatal(web.Listen(":3000"))
