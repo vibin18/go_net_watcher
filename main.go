@@ -37,7 +37,6 @@ func main() {
 		MappedList:       make([]netwatcher.Mapping, 0),
 		FinalMap:         make(map[string]netwatcher.NetDevices),
 		Lock:             &lock,
-		Fiber:            &fiber.Ctx{},
 	}
 	app.GetConf(arg.MapFile)
 
