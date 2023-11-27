@@ -148,6 +148,6 @@ func ips(n *net.IPNet) (out []net.IP) {
 		out = append(out, net.IP(buf[:]))
 	}
 	et := time.Since(start)
-	log.Printf("Mapping took %v seconds", et.Seconds())
+	log.Printf("Scanning took %v seconds", et.Seconds())
 	return
 }
