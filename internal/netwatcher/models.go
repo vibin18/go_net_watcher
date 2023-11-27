@@ -1,6 +1,9 @@
 package netwatcher
 
-import "sync"
+import (
+	"github.com/gofiber/fiber/v2"
+	"sync"
+)
 
 type NetDevices struct {
 	IP   string
@@ -17,6 +20,7 @@ type AppConfig struct {
 	Lock             *sync.Mutex
 	MappedList       []Mapping
 	FinalMap         map[string]NetDevices
+	Fiber            *fiber.Ctx
 }
 
 func NewAppConfig() *AppConfig {

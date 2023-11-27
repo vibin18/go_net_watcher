@@ -2,19 +2,19 @@ package main
 
 import (
 	"fmt"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/html/v2"
 	"github.com/jessevdk/go-flags"
 	"go_net_watcher/internal/netwatcher"
 	"go_net_watcher/opts"
 	"log"
 	"os"
 	"sync"
-	"time"
 )
 
 var (
 	argparser *flags.Parser
 	arg       opts.Params
-	wg        sync.WaitGroup
 	lock      sync.Mutex
 )
 
@@ -31,47 +31,35 @@ func main() {
 		MappedList:       make([]netwatcher.Mapping, 0),
 		FinalMap:         make(map[string]netwatcher.NetDevices),
 		Lock:             &lock,
+		Fiber:            &fiber.Ctx{},
 	}
 	app.GetConf(arg.MapFile)
 
-	wg.Add(3)
 	// Start up a scan on each interface.
 	go func() {
-		defer wg.Done()
 		if err := app.ArpScan(&myIface); err != nil {
 			log.Printf("interface %v: %v", myIface.Name, err)
 		}
 	}()
 
 	go func() {
-		defer wg.Done()
 		for {
-			//start := time.Now()
 			app.Lock.Lock()
 			app.MapDevices()
 			app.Lock.Unlock()
-			//et := time.Since(start)
-			//log.Printf("Mapping took %v seconds", et.Seconds())
 		}
 
 	}()
 
-	go func() {
-		defer wg.Done()
-		for {
-			app.Lock.Lock()
-			err := PrettyPrint(app.FinalMap)
-			if err != nil {
-				println(err)
-			}
-			app.Lock.Unlock()
-			time.Sleep(2 * time.Second)
+	engine := html.New("html", ".html")
+	engine.Reload(true)
+	engine.Debug(true)
 
-		}
+	web := fiber.New(fiber.Config{Views: engine})
 
-	}()
+	web.Get("/", home)
+	log.Fatal(web.Listen(":3000"))
 
-	wg.Wait()
 }
 
 func initArgparser() {
