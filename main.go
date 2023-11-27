@@ -15,6 +15,7 @@ var (
 	argparser *flags.Parser
 	arg       opts.Params
 	wg        sync.WaitGroup
+	lock      sync.Mutex
 )
 
 func main() {
@@ -25,7 +26,11 @@ func main() {
 		panic(err)
 	}
 
-	app := netwatcher.AppConfig{}
+	app := netwatcher.AppConfig{
+		NetworkDeviceMap: make(map[string]string),
+		MappedList:       make([]netwatcher.Mapping, 0),
+		FinalMap:         make(map[string]netwatcher.NetDevices),
+	}
 	app.GetConf(arg.MapFile)
 
 	wg.Add(2)
