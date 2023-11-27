@@ -48,7 +48,6 @@ func main() {
 
 	go func() {
 		defer wg.Done()
-		start := time.Now()
 		for {
 			start := time.Now()
 			app.Lock.Lock()
