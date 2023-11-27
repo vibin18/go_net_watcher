@@ -46,12 +46,12 @@ func main() {
 	go func() {
 		defer wg.Done()
 		for {
-			start := time.Now()
+			//start := time.Now()
 			app.Lock.Lock()
 			app.MapDevices()
 			app.Lock.Unlock()
-			et := time.Since(start)
-			log.Printf("Mapping took %v seconds", et.Seconds())
+			//et := time.Since(start)
+			//log.Printf("Mapping took %v seconds", et.Seconds())
 		}
 
 	}()
