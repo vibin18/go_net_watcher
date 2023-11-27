@@ -136,14 +136,18 @@ func writeARP(handle *pcap.Handle, iface *net.Interface, addr *net.IPNet) error 
 // net.IPNet.  It returns all IPs it can over the channel it sends back, closing
 // the channel when done.
 func ips(n *net.IPNet) (out []net.IP) {
+	start := time.Now()
 	num := binary.BigEndian.Uint32([]byte(n.IP))
 	mask := binary.BigEndian.Uint32([]byte(n.Mask))
 	network := num & mask
 	broadcast := network | ^mask
+
 	for network++; network < broadcast; network++ {
 		var buf [4]byte
 		binary.BigEndian.PutUint32(buf[:], network)
 		out = append(out, net.IP(buf[:]))
 	}
+	et := time.Since(start)
+	log.Printf("Mapping took %v seconds", et.Seconds())
 	return
 }

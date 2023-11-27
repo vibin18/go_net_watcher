@@ -34,16 +34,13 @@ func main() {
 	}
 	app.GetConf(arg.MapFile)
 
-	wg.Add(2)
+	wg.Add(3)
 	// Start up a scan on each interface.
 	go func() {
 		defer wg.Done()
-		start := time.Now()
 		if err := app.ArpScan(&myIface); err != nil {
 			log.Printf("interface %v: %v", myIface.Name, err)
 		}
-		et := time.Since(start)
-		log.Printf("Scanning took %v seconds", et.Seconds())
 	}()
 
 	go func() {
