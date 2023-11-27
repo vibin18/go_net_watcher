@@ -10,25 +10,26 @@
 <div class="container">
     <div class="row g-5">
         <div class="col">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">IP Address</th>
-                    <th scope="col">MAC</th>
-                </tr>
-                </thead>
-                {{ range $mac,$item := .}}
+            {{ . }}
+<!--            <table class="table">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th scope="col">Name</th>-->
+<!--                    <th scope="col">IP Address</th>-->
+<!--                    <th scope="col">MAC</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                {{ range $mac,$item := .}}-->
 
-                <tbody>
-                <tr>
-                    <td> {{$item.Name}} </td>
-                    <td> {{$item.IP}} </td>
-                    <td> {{$mac}} </td>
-                </tr>
-                </tbody>
-                {{end}}
-            </table>
+<!--                <tbody>-->
+<!--                <tr>-->
+<!--                    <td> {{$item.Name}} </td>-->
+<!--                    <td> {{$item.IP}} </td>-->
+<!--                    <td> {{$mac}} </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--                {{end}}-->
+<!--            </table>-->
         </div>
     </div>
 </div>
