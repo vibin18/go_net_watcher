@@ -12,6 +12,6 @@ func NewWebTest() *netwatcher.AppConfig {
 }
 
 func home(c *fiber.Ctx) error {
-	gg := NewWebTest()
-	return c.Render("index", &gg.FinalMap)
+	//gg := NewWebTest()
+	return c.Render("index", nil)
 }
