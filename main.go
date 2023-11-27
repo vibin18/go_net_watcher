@@ -30,6 +30,7 @@ func main() {
 		NetworkDeviceMap: make(map[string]string),
 		MappedList:       make([]netwatcher.Mapping, 0),
 		FinalMap:         make(map[string]netwatcher.NetDevices),
+		Lock:             &lock,
 	}
 	app.GetConf(arg.MapFile)
 
