@@ -65,7 +65,8 @@ func main() {
 		gg := make(map[string]netwatcher.NetDevices)
 
 		gg = app.FinalMap
-		return ctx.Render("index", gg)
+		return ctx.JSON(gg)
+		//return ctx.Render("index", gg)
 	})
 	//web.Get("/", myapp.Home)
 	log.Fatal(web.Listen(":3000"))
