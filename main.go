@@ -57,7 +57,11 @@ func main() {
 	}()
 
 	web.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.JSON(app.FinalMap)
+		gg := make(map[string]netwatcher.NetDevices)
+		app.Lock.Lock()
+		gg = app.FinalMap
+		app.Lock.Unlock()
+		return ctx.JSON(gg)
 	})
 
 	log.Fatal(web.Listen(":3000"))
