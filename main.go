@@ -18,6 +18,8 @@ var (
 	lock      sync.Mutex
 )
 
+type LocalAppConfig *netwatcher.AppConfig
+
 func main() {
 	initArgparser()
 
@@ -32,39 +34,40 @@ func main() {
 
 	web := fiber.New(fiber.Config{Views: engine})
 
-	app := netwatcher.AppConfig{
+	app := &netwatcher.AppConfig{
 		NetworkDeviceMap: make(map[string]string),
 		MappedList:       make([]netwatcher.Mapping, 0),
 		FinalMap:         make(map[string]netwatcher.NetDevices),
 		Lock:             &lock,
 	}
+	myapp := netwatcher.NewAppConfig(*app)
 	app.GetConf(arg.MapFile)
 
 	// Start up a scan on each interface.
 	go func() {
-		if err := app.ArpScan(&myIface); err != nil {
+		if err := myapp.ArpScan(&myIface); err != nil {
 			log.Printf("interface %v: %v", myIface.Name, err)
 		}
 	}()
 
 	go func() {
 		for {
-			app.Lock.Lock()
-			app.MapDevices()
-			app.Lock.Unlock()
+			myapp.Lock.Lock()
+			myapp.MapDevices()
+			myapp.Lock.Unlock()
 		}
 
 	}()
 
-	//web.Get("/", func(ctx *fiber.Ctx) error {
-	//	app.Lock.Lock()
-	//	defer app.Lock.Unlock()
-	//	gg := make(map[string]netwatcher.NetDevices)
-	//
-	//	gg = app.FinalMap
-	//	return ctx.JSON(gg)
-	//})
-	web.Get("/", home)
+	web.Get("/", func(ctx *fiber.Ctx) error {
+		app.Lock.Lock()
+		defer app.Lock.Unlock()
+		gg := make(map[string]netwatcher.NetDevices)
+
+		gg = app.FinalMap
+		return ctx.Render("index", gg)
+	})
+	//web.Get("/", myapp.Home)
 	log.Fatal(web.Listen(":3000"))
 
 }

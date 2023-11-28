@@ -21,6 +21,6 @@ type AppConfig struct {
 	FinalMap         map[string]NetDevices
 }
 
-func NewAppConfig() *AppConfig {
-	return &AppConfig{}
+func NewAppConfig(a AppConfig) *AppConfig {
+	return &a
 }

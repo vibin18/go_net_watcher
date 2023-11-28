@@ -13,7 +13,7 @@ import (
 	"github.com/google/gopacket/pcap"
 )
 
-func (c *AppConfig) ArpScan(iface *net.Interface) error {
+func (a *AppConfig) ArpScan(iface *net.Interface) error {
 	// We just look for IPv4 addresses, so try to find if the interface has one.
 	var addr *net.IPNet
 	if addrs, err := iface.Addrs(); err != nil {
@@ -50,7 +50,7 @@ func (c *AppConfig) ArpScan(iface *net.Interface) error {
 
 	// Start up a goroutine to read in packet data.
 	stop := make(chan struct{})
-	go c.readARP(handle, iface, stop)
+	go a.readARP(handle, iface, stop)
 	defer close(stop)
 	for {
 		// Write our scan packets out to the handle.
@@ -68,7 +68,7 @@ func (c *AppConfig) ArpScan(iface *net.Interface) error {
 // readARP watches a handle for incoming ARP responses we might care about, and prints them.
 //
 // readARP loops until 'stop' is closed.
-func (c *AppConfig) readARP(handle *pcap.Handle, iface *net.Interface, stop chan struct{}) {
+func (a *AppConfig) readARP(handle *pcap.Handle, iface *net.Interface, stop chan struct{}) {
 	src := gopacket.NewPacketSource(handle, layers.LayerTypeEthernet)
 	in := src.Packets()
 	for {
@@ -90,7 +90,7 @@ func (c *AppConfig) readARP(handle *pcap.Handle, iface *net.Interface, stop chan
 			// if for example someone else sends US an ARP request.  Doesn't much matter, though...
 			// all information is good information :)
 
-			c.AddDevicesToNetworkMap(arp.SourceProtAddress, arp.SourceHwAddress)
+			a.AddDevicesToNetworkMap(arp.SourceProtAddress, arp.SourceHwAddress)
 			// log.Printf("IP %v is at %v", net.IP(arp.SourceProtAddress), net.HardwareAddr(arp.SourceHwAddress))
 		}
 	}

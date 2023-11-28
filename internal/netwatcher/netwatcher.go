@@ -8,29 +8,29 @@ import (
 	"net"
 )
 
-func (c *AppConfig) GetConf(file string) {
+func (a *AppConfig) GetConf(file string) {
 	yamlFile, err := ioutil.ReadFile(file)
 	if err != nil {
 		log.Fatalf("Mapping file %v not found! #%v ", file, err)
 	}
-	err = yaml.Unmarshal(yamlFile, &c.MappedList)
+	err = yaml.Unmarshal(yamlFile, &a.MappedList)
 	if err != nil {
 		log.Fatalf("Unmarshal: %v", err)
 	}
 
 }
 
-func (c *AppConfig) MapDevices() {
-	for mac, ip := range c.NetworkDeviceMap {
-		for _, item := range c.MappedList {
+func (a *AppConfig) MapDevices() {
+	for mac, ip := range a.NetworkDeviceMap {
+		for _, item := range a.MappedList {
 			if mac == item.Mac {
-				c.FinalMap[mac] = NetDevices{
+				a.FinalMap[mac] = NetDevices{
 					ip,
 					item.Name,
 				}
 				break
 			}
-			c.FinalMap[mac] = NetDevices{
+			a.FinalMap[mac] = NetDevices{
 				ip,
 				mac,
 			}
@@ -39,7 +39,7 @@ func (c *AppConfig) MapDevices() {
 	}
 }
 
-func (c *AppConfig) AddDevicesToNetworkMap(ip net.IP, mac net.HardwareAddr) {
+func (a *AppConfig) AddDevicesToNetworkMap(ip net.IP, mac net.HardwareAddr) {
 	if ip == nil {
 		log.Printf("Missing IP provide while adding to the nework map")
 	}
@@ -48,7 +48,7 @@ func (c *AppConfig) AddDevicesToNetworkMap(ip net.IP, mac net.HardwareAddr) {
 	}
 	myipString := fmt.Sprint(ip)
 	mymacString := fmt.Sprint(mac)
-	c.Lock.Lock()
-	c.NetworkDeviceMap[mymacString] = myipString
-	c.Lock.Unlock()
+	a.Lock.Lock()
+	a.NetworkDeviceMap[mymacString] = myipString
+	a.Lock.Unlock()
 }
