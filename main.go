@@ -56,15 +56,15 @@ func main() {
 
 	}()
 
-	web.Get("/", func(ctx *fiber.Ctx) error {
-		app.Lock.Lock()
-		defer app.Lock.Unlock()
-		gg := make(map[string]netwatcher.NetDevices)
-
-		gg = app.FinalMap
-		return ctx.JSON(gg)
-	})
-
+	//web.Get("/", func(ctx *fiber.Ctx) error {
+	//	app.Lock.Lock()
+	//	defer app.Lock.Unlock()
+	//	gg := make(map[string]netwatcher.NetDevices)
+	//
+	//	gg = app.FinalMap
+	//	return ctx.JSON(gg)
+	//})
+	web.Get("/", home)
 	log.Fatal(web.Listen(":3000"))
 
 }

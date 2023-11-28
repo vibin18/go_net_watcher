@@ -6,9 +6,10 @@ import (
 )
 
 func home(c *fiber.Ctx) error {
+	lock.Lock()
+	defer lock.Unlock()
 	var test *netwatcher.AppConfig
-	gg := test.FinalMap
-	FinalSerializer := make(map[string]netwatcher.NetDevices)
-	FinalSerializer = gg
-	return c.Render("index", FinalSerializer)
+	gg := make(map[string]netwatcher.NetDevices)
+	gg = test.FinalMap
+	return c.Render("index", gg)
 }
