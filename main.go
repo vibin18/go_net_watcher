@@ -56,7 +56,10 @@ func main() {
 
 	}()
 
-	web.Get("/", home)
+	web.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.JSON(app.FinalMap)
+	})
+
 	log.Fatal(web.Listen(":3000"))
 
 }

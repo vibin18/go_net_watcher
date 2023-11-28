@@ -5,13 +5,9 @@ import (
 	"go_net_watcher/internal/netwatcher"
 )
 
-func NewWebTest() map[string]netwatcher.NetDevices {
-	var test *netwatcher.AppConfig
-	return test.FinalMap
-}
-
 func home(c *fiber.Ctx) error {
-	gg := NewWebTest()
+	var test *netwatcher.AppConfig
+	gg := test.FinalMap
 	FinalSerializer := make(map[string]netwatcher.NetDevices)
 	FinalSerializer = gg
 	return c.Render("index", FinalSerializer)
