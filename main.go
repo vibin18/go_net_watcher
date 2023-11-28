@@ -40,7 +40,7 @@ func main() {
 		FinalMap:         make(map[string]netwatcher.NetDevices),
 		Lock:             &lock,
 	}
-	myapp := netwatcher.NewAppConfig(*app)
+	myapp := netwatcher.NewAppConfig(app)
 	app.GetConf(arg.MapFile)
 
 	// Start up a scan on each interface.
