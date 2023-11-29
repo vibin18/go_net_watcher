@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gofiber/fiber/v2/log"
 	"net"
 )
 
 func getAllInterfaces() []net.Interface {
 	allIfaces, err := net.Interfaces()
 	if err != nil {
-		panic(err)
+		log.Panicf("Error validating network interface %v. \n%v", allIfaces, err)
 	}
 	return allIfaces
 }
@@ -18,7 +19,7 @@ func getAllInterfaces() []net.Interface {
 func validateInterface(iface string) (net.Interface, error) {
 	allIfaces := getAllInterfaces()
 	for _, i := range allIfaces {
-		fmt.Println("Checking interface : ", i)
+		log.Warn("Checking interface : ", i)
 		if iface == i.Name {
 			return i, nil
 		}
@@ -26,6 +27,7 @@ func validateInterface(iface string) (net.Interface, error) {
 	return net.Interface{}, errors.New("Interface not found ")
 }
 
+// PrettyPrint is only used for debugging
 func PrettyPrint(v interface{}) (err error) {
 	b, err := json.MarshalIndent(v, "", "  ")
 	if err == nil {

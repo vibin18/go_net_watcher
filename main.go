@@ -19,22 +19,23 @@ var (
 	lock      sync.Mutex
 )
 
-type LocalAppConfig *netwatcher.AppConfig
-
 func main() {
 	initArgparser()
 
+	// Validating Network interface
 	myIface, err := validateInterface(arg.Iface)
 	if err != nil {
 		panic(err)
 	}
 
+	// enable template rendering on fiber
 	engine := html.New("html", ".html")
 	engine.Reload(true)
 	engine.Debug(true)
 
 	web := fiber.New(fiber.Config{Views: engine})
 
+	// load global configs
 	app := &netwatcher.AppConfig{
 		NetworkDeviceMap: make(map[string]string),
 		MappedList:       make([]netwatcher.Mapping, 0),
