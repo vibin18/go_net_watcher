@@ -52,24 +52,15 @@ func main() {
 		}
 	}()
 
-	go func() {
-		for {
-			myapp.Lock.Lock()
-			myapp.MapDevices()
-			myapp.Lock.Unlock()
-		}
-
-	}()
-
-	//web.Get("/", func(ctx *fiber.Ctx) error {
-	//	app.Lock.Lock()
-	//	defer app.Lock.Unlock()
-	//	gg := make(map[string]netwatcher.NetDevices)
+	//go func() {
+	//	for {
+	//		myapp.Lock.Lock()
+	//		myapp.MapDevices()
+	//		myapp.Lock.Unlock()
+	//	}
 	//
-	//	gg = app.FinalMap
-	//	// return ctx.JSON(gg)
-	//	return ctx.Render("index", gg)
-	//})
+	//}()
+
 	web.Get("/", handlers.Home)
 	log.Fatal(web.Listen(":3000"))
 
