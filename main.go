@@ -52,15 +52,6 @@ func main() {
 		}
 	}()
 
-	//go func() {
-	//	for {
-	//		myapp.Lock.Lock()
-	//		myapp.MapDevices()
-	//		myapp.Lock.Unlock()
-	//	}
-	//
-	//}()
-
 	web.Get("/", handlers.Home)
 	log.Fatal(web.Listen(":3000"))
 
