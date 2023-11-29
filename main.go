@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 	"github.com/jessevdk/go-flags"
+	"go_net_watcher/internal/handlers"
 	"go_net_watcher/internal/netwatcher"
 	"go_net_watcher/opts"
 	"log"
@@ -42,6 +43,7 @@ func main() {
 	}
 	myapp := netwatcher.NewAppConfig(app)
 	app.GetConf(arg.MapFile)
+	handlers.NewRouteConfigs(app)
 
 	// Start up a scan on each interface.
 	go func() {
@@ -59,16 +61,16 @@ func main() {
 
 	}()
 
-	web.Get("/", func(ctx *fiber.Ctx) error {
-		app.Lock.Lock()
-		defer app.Lock.Unlock()
-		gg := make(map[string]netwatcher.NetDevices)
-
-		gg = app.FinalMap
-		// return ctx.JSON(gg)
-		return ctx.Render("index", gg)
-	})
-	//web.Get("/", myapp.Home)
+	//web.Get("/", func(ctx *fiber.Ctx) error {
+	//	app.Lock.Lock()
+	//	defer app.Lock.Unlock()
+	//	gg := make(map[string]netwatcher.NetDevices)
+	//
+	//	gg = app.FinalMap
+	//	// return ctx.JSON(gg)
+	//	return ctx.Render("index", gg)
+	//})
+	web.Get("/", handlers.Home)
 	log.Fatal(web.Listen(":3000"))
 
 }
