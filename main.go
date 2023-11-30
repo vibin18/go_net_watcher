@@ -54,6 +54,7 @@ func main() {
 	}()
 
 	web.Get("/", handlers.Home)
+	web.Get("/watcher", handlers.Watcher)
 	log.Fatal(web.Listen(":3000"))
 
 }
