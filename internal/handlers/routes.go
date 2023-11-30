@@ -17,7 +17,7 @@ func Watcher(ctx *fiber.Ctx) error {
 	amap := make(map[string]netwatcher.NetDevices)
 	amap = app.FinalMap
 
-	return ctx.Render("index", amap)
+	return ctx.Render("list", amap)
 }
 
 func Home(ctx *fiber.Ctx) error {
