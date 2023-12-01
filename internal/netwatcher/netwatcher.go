@@ -24,16 +24,18 @@ func (a *AppConfig) MapDevices() {
 	for mac, ip := range a.NetworkDeviceMap {
 		for _, item := range a.MappedList {
 			if mac == item.Mac {
-				a.FinalMap[mac] = NetDevices{
+				a.FinalMap = append(a.FinalMap, NetDevices{
+					mac,
 					ip,
 					item.Name,
-				}
+				})
 				break
 			}
-			a.FinalMap[mac] = NetDevices{
+			a.FinalMap = append(a.FinalMap, NetDevices{
+				mac,
 				ip,
 				mac,
-			}
+			})
 
 		}
 	}

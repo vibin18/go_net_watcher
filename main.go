@@ -40,7 +40,7 @@ func main() {
 	app := &netwatcher.AppConfig{
 		NetworkDeviceMap: make(map[string]string),
 		MappedList:       make([]netwatcher.Mapping, 0),
-		FinalMap:         make(map[string]netwatcher.NetDevices),
+		FinalMap:         []netwatcher.NetDevices{},
 		Lock:             &lock,
 	}
 	myapp := netwatcher.NewAppConfig(app)

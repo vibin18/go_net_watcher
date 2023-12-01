@@ -14,7 +14,7 @@ func NewRouteConfigs(a *netwatcher.AppConfig) {
 func Watcher(ctx *fiber.Ctx) error {
 	app.Lock.Lock()
 	defer app.Lock.Unlock()
-	amap := make(map[string]netwatcher.NetDevices)
+	var amap []netwatcher.NetDevices
 	amap = app.FinalMap
 
 	return ctx.Render("list", amap)
