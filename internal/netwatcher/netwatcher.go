@@ -23,22 +23,37 @@ func (a *AppConfig) GetConf(file string) {
 func (a *AppConfig) MapDevices() {
 	for mac, ip := range a.NetworkDeviceMap {
 		for _, item := range a.MappedList {
-			if mac == item.Mac {
+
+			if !IFExist(mac, a.FinalMap) {
+				if mac == item.Mac {
+
+					dmap := NetDevices{
+						mac,
+						ip,
+						item.Name,
+					}
+
+					a.FinalMap = append(a.FinalMap, dmap)
+					break
+				}
 				a.FinalMap = append(a.FinalMap, NetDevices{
 					mac,
 					ip,
-					item.Name,
+					mac,
 				})
-				break
-			}
-			a.FinalMap = append(a.FinalMap, NetDevices{
-				mac,
-				ip,
-				mac,
-			})
 
+			}
 		}
 	}
+}
+
+func IFExist(device string, devices []NetDevices) bool {
+	for _, dev := range devices {
+		if dev.MAC == device {
+			return true
+		}
+	}
+	return false
 }
 
 func (a *AppConfig) AddDevicesToNetworkMap(ip net.IP, mac net.HardwareAddr) {
