@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 	"github.com/jessevdk/go-flags"
+	"go_net_watcher/internal/database"
 	"go_net_watcher/internal/handlers"
 	"go_net_watcher/internal/netwatcher"
 	"go_net_watcher/opts"
@@ -21,7 +22,7 @@ var (
 
 func main() {
 	initArgparser()
-
+	database.ConnectDB()
 	// Validating Network interface
 	myIface, err := validateInterface(arg.Iface)
 	if err != nil {

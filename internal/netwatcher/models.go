@@ -5,8 +5,9 @@ import (
 )
 
 type NetDevices struct {
-	IP   string
-	Name string
+	IP   string `json:"ip"`
+	Name string `json:"name"`
+	//ID   uint   `json:"id" gorm:"primaryKey"`
 }
 
 type Mapping struct {
