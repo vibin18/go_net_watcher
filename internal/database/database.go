@@ -1,7 +1,6 @@
 package database
 
 import (
-	"go_net_watcher/internal/netwatcher"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -10,6 +9,13 @@ import (
 
 type SQL struct {
 	Db *gorm.DB
+}
+
+type Device struct {
+	MAC  string `json:"mac"`
+	IP   string `json:"ip"`
+	Name string `json:"name"`
+	ID   uint   `json:"id" gorm:"primaryKey"`
 }
 
 var Database SQL
@@ -25,7 +31,7 @@ func ConnectDB() {
 	db.Logger = logger.Default.LogMode(logger.Info)
 	log.Printf("Running DB migrations..")
 
-	db.AutoMigrate(&netwatcher.Device{})
+	db.AutoMigrate(&Device{})
 
 	Database = SQL{
 		Db: db,
