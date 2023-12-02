@@ -94,6 +94,7 @@ func (a *AppConfig) readARP(handle *pcap.Handle, iface *net.Interface, stop chan
 			a.Lock.Lock()
 			a.MapDevices()
 			a.Lock.Unlock()
+			a.AddDeviceToDb(arp.SourceProtAddress, arp.SourceHwAddress)
 			// log.Printf("IP %v is at %v", net.IP(arp.SourceProtAddress), net.HardwareAddr(arp.SourceHwAddress))
 		}
 	}

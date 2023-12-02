@@ -25,7 +25,7 @@ func ConnectDB() {
 	db.Logger = logger.Default.LogMode(logger.Info)
 	log.Printf("Running DB migrations..")
 
-	db.AutoMigrate(&netwatcher.NetDevices{})
+	db.AutoMigrate(&netwatcher.Device{})
 
 	Database = SQL{
 		Db: db,

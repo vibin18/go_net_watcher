@@ -2,6 +2,7 @@ package netwatcher
 
 import (
 	"fmt"
+	"go_net_watcher/internal/database"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -27,7 +28,7 @@ func (a *AppConfig) MapDevices() {
 			if !IFExist(mac, a.FinalMap) {
 				if mac == item.Mac {
 
-					dmap := NetDevices{
+					dmap := NetDevice{
 						mac,
 						ip,
 						item.Name,
@@ -36,7 +37,7 @@ func (a *AppConfig) MapDevices() {
 					a.FinalMap = append(a.FinalMap, dmap)
 					break
 				}
-				a.FinalMap = append(a.FinalMap, NetDevices{
+				a.FinalMap = append(a.FinalMap, NetDevice{
 					mac,
 					ip,
 					mac,
@@ -47,10 +48,98 @@ func (a *AppConfig) MapDevices() {
 	}
 }
 
-func IFExist(device string, devices []NetDevices) bool {
+func (a *AppConfig) AddDeviceToDb(ip net.IP, mac net.HardwareAddr) {
+	if ip == nil {
+		log.Printf("Missing IP!")
+	}
+	if mac == nil {
+		log.Printf("Missing MAC!")
+	}
+	myipString := fmt.Sprint(ip)
+	mymacString := fmt.Sprint(mac)
+	device := NetDevice{
+		mymacString,
+		myipString,
+		mymacString,
+	}
+
+	ExistingDevices := []Device{}
+	database.Database.Db.Find(&ExistingDevices)
+	//  Check device already exist with an ID
+	// loop through existing MAC(devices) and if a device with an ID exist
+	for _, device := range ExistingDevices {
+		// Check device has same MAC
+
+		if device.MAC == device.MAC {
+			// Device has same MAC
+			// Continue to next loop
+			break
+		}
+		// Device has a different MAC
+		// Update
+
+		// TODO Check if Update works when new mapping is given in the mapping yaml file
+		database.Database.Db.Update("ID", device)
+	}
+
+	//  Device not found with above match
+	CreateDeviceToDb(device, a.MappedList)
+
+}
+
+func CreateDeviceToDb(device NetDevice, mappedList []Mapping) {
+
+	c1 := make(chan bool, len(mappedList))
+	c2 := make(chan string, len(mappedList))
+	// Check device mac has a mapping available
+
+	for _, md := range mappedList {
+		// Device with mapping
+		go func(md Mapping) {
+			if md.Mac == device.MAC {
+				c1 <- true
+				c2 <- md.Name
+			} else {
+				c1 <- false
+				c2 <- md.Mac
+			}
+		}(md)
+		// Add device to DB with Name mapping
+	}
+
+	for i := 0; i < len(mappedList); i++ {
+		select {
+		case status := <-c1:
+			if status {
+				myname := <-c2
+				// Device with mapping
+				myDevice := Device{
+					MAC:  device.MAC,
+					IP:   device.IP,
+					Name: myname,
+				}
+				database.Database.Db.Create(myDevice)
+				break
+			}
+			myname := <-c2
+			// Device without mapping
+			myDevice := Device{
+				MAC:  device.MAC,
+				IP:   device.IP,
+				Name: myname,
+			}
+			database.Database.Db.Create(myDevice)
+		}
+	}
+
+	// Device with no mapping
+	// Add device to DB with MAC mapping
+}
+
+func IFExist(device string, devices []NetDevice) bool {
 	c1 := make(chan bool, len(devices))
 	for _, dev := range devices {
-		go func(dev NetDevices) {
+		go func(dev NetDevice) {
 			if dev.MAC == device {
 				c1 <- true
 			} else {
@@ -74,10 +163,10 @@ func IFExist(device string, devices []NetDevices) bool {
 
 func (a *AppConfig) AddDevicesToNetworkMap(ip net.IP, mac net.HardwareAddr) {
 	if ip == nil {
-		log.Printf("Missing IP provide while adding to the nework map")
+		log.Printf("Missing IP!")
 	}
 	if mac == nil {
-		log.Printf("Missing MAC while adding to the nework map")
+		log.Printf("Missing MAC!")
 	}
 	myipString := fmt.Sprint(ip)
 	mymacString := fmt.Sprint(mac)
