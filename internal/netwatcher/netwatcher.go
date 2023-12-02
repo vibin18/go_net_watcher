@@ -48,12 +48,26 @@ func (a *AppConfig) MapDevices() {
 }
 
 func IFExist(device string, devices []NetDevices) bool {
+	c1 := make(chan bool, len(devices))
 	for _, dev := range devices {
-		if dev.MAC == device {
-			return true
+		go func() {
+			if dev.MAC == device {
+				c1 <- true
+			}
+		}()
+	}
+
+	for i := 0; i < len(devices); i++ {
+		select {
+		case status := <-c1:
+			if status {
+				return true
+			}
+			break
 		}
 	}
 	return false
+
 }
 
 func (a *AppConfig) AddDevicesToNetworkMap(ip net.IP, mac net.HardwareAddr) {
