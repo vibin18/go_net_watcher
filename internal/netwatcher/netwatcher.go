@@ -50,11 +50,13 @@ func (a *AppConfig) MapDevices() {
 func IFExist(device string, devices []NetDevices) bool {
 	c1 := make(chan bool, len(devices))
 	for _, dev := range devices {
-		go func() {
+		go func(dev NetDevices) {
 			if dev.MAC == device {
 				c1 <- true
+			} else {
+				c1 <- false
 			}
-		}()
+		}(dev)
 	}
 
 	for i := 0; i < len(devices); i++ {
