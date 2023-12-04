@@ -151,30 +151,39 @@ func IFExist(device string, devices []NetDevice) bool {
 }
 
 func IFMapExist(device string, devices []Mapping) string {
-	c1 := make(chan bool, len(devices))
-	c2 := make(chan string, len(devices))
+	type myType struct {
+		Name   string
+		Status bool
+	}
+	c1 := make(chan myType, len(devices))
 	log.Printf("Checking %v for mapped name", device)
 	for _, dev := range devices {
 		go func(dev Mapping) {
 			if dev.Mac == device {
-				c1 <- true
-				c2 <- dev.Name
+				log.Printf("Match found!!!")
+				log.Printf("Adding %v as NAME", dev.Name)
+				c1 <- myType{
+					Name:   dev.Name,
+					Status: true,
+				}
+
 			} else {
-				c1 <- false
-				c2 <- dev.Mac
+				c1 <- myType{
+					Name:   dev.Name,
+					Status: false,
+				}
 			}
 		}(dev)
 	}
 
 	for i := 0; i < len(devices); i++ {
 		select {
+
 		case status := <-c1:
 
-			if status {
-
-				mapped := <-c2
-				log.Printf("Match found for MAC: %v with NAME:%v ", device, mapped)
-				return mapped
+			if status.Status {
+				log.Printf("Match found for MAC: %v with NAME:%v ", device, status.Name)
+				return status.Name
 			}
 		}
 	}
