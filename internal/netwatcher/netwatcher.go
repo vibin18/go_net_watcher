@@ -111,7 +111,7 @@ func CreateDeviceToDb(device NetDevice, mappedList []Mapping) {
 	// Check device mac has a mapping available
 
 	fmac := IFMapExist(device.MAC, mappedList)
-
+	log.Printf("Adding %v to db", fmac)
 	myDevice := Device{
 		MAC:  device.MAC,
 		IP:   device.IP,
@@ -125,8 +125,10 @@ func CreateDeviceToDb(device NetDevice, mappedList []Mapping) {
 
 func IFExist(device string, devices []NetDevice) bool {
 	c1 := make(chan bool, len(devices))
+
 	for _, dev := range devices {
 		go func(dev NetDevice) {
+
 			if dev.MAC == device {
 				c1 <- true
 			} else {
@@ -151,6 +153,7 @@ func IFExist(device string, devices []NetDevice) bool {
 func IFMapExist(device string, devices []Mapping) string {
 	c1 := make(chan bool, len(devices))
 	c2 := make(chan string, len(devices))
+	log.Printf("Checking %v for mapped name", device)
 	for _, dev := range devices {
 		go func(dev Mapping) {
 			if dev.Mac == device {
@@ -168,12 +171,14 @@ func IFMapExist(device string, devices []Mapping) string {
 		case status := <-c1:
 
 			if status {
+
 				mapped := <-c2
+				log.Printf("Match found for MAC: %v with NAME:%v ", device, mapped)
 				return mapped
 			}
-			break
 		}
 	}
+	log.Printf("Match NOT found for MAC: %v!!!!", device)
 	return device
 
 }
