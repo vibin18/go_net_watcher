@@ -83,7 +83,7 @@ func (a *AppConfig) AddDeviceToDb(ip net.IP, mac net.HardwareAddr) {
 			// Device has a different MAC
 			// Update
 			log.Printf("Ignoring MAC : %v", dev.MAC)
-			break
+			return
 		}
 		// Device has a different MAC
 		// Update
