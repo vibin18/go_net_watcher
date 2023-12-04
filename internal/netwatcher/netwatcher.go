@@ -67,10 +67,10 @@ func (a *AppConfig) AddDeviceToDb(ip net.IP, mac net.HardwareAddr) {
 	database.Database.Db.Find(&ExistingDevices)
 	//  Check device already exist with an ID
 	// loop through existing MAC(devices) and if a device with an ID exist
-	for _, device := range ExistingDevices {
+	for _, dev := range ExistingDevices {
 		// Check device has same MAC
 
-		if device.MAC == device.MAC {
+		if dev.MAC == device.MAC {
 			// Device has same MAC
 			// Continue to next loop
 			break
@@ -113,7 +113,7 @@ func CreateDeviceToDb(device NetDevice, mappedList []Mapping) {
 			if status {
 
 				myname := <-c2
-				log.Printf("Mac %v already exist in the db and adding name %v", myname.MAC, myname.Name)
+				log.Printf("Mac to Name found in MAP for mac: %v with name: %v", myname.MAC, myname.Name)
 				// Device with mapping
 				myDevice := Device{
 					MAC:  device.MAC,
@@ -125,7 +125,7 @@ func CreateDeviceToDb(device NetDevice, mappedList []Mapping) {
 			}
 
 			myname := <-c2
-			log.Printf("Mac %v NOT found in the db and adding name %v", myname.MAC, myname.MAC)
+			log.Printf("Name NOT found in the Map for MAC: %v", myname.MAC, myname.MAC)
 			// Device without mapping
 			myDevice := Device{
 				MAC:  device.MAC,
