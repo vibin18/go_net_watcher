@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"log"
 	"net"
 	"time"
@@ -95,6 +96,7 @@ func (a *AppConfig) readARP(handle *pcap.Handle, iface *net.Interface, stop chan
 			a.MapDevices()
 			a.Lock.Unlock()
 			a.AddDeviceToDb(arp.SourceProtAddress, arp.SourceHwAddress)
+			log.Printf("Added IP %v with MAC %v to DB", fmt.Sprint(arp.SourceHwAddress), fmt.Sprint(arp.SourceHwAddress))
 			// log.Printf("IP %v is at %v", net.IP(arp.SourceProtAddress), net.HardwareAddr(arp.SourceHwAddress))
 		}
 	}
