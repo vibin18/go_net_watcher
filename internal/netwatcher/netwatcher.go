@@ -108,52 +108,16 @@ func CheckDeviceExist(device NetDevice) bool {
 
 func CreateDeviceToDb(device NetDevice, mappedList []Mapping) {
 
-	c1 := make(chan bool, len(mappedList))
-	c2 := make(chan NetDevice, len(mappedList))
 	// Check device mac has a mapping available
 
-	for _, md := range mappedList {
-		// Device with mapping
-		go func(md Mapping) {
-			if md.Mac == device.MAC {
-				c1 <- true
-				c2 <- device
-			} else {
-				c1 <- false
-				c2 <- device
-			}
-		}(md)
-		// Add device to DB with Name mapping
+	fmac := IFMapExist(device.MAC, mappedList)
+
+	myDevice := Device{
+		MAC:  device.MAC,
+		IP:   device.IP,
+		Name: fmac,
 	}
-
-	for i := 0; i < len(mappedList); i++ {
-		select {
-		case status := <-c1:
-			if status {
-
-				myname := <-c2
-				log.Printf("Mac to Name found in MAP for mac: %v with name: %v", myname.MAC, myname.Name)
-				// Device with mapping
-				myDevice := Device{
-					MAC:  device.MAC,
-					IP:   device.IP,
-					Name: myname.Name,
-				}
-				database.Database.Db.Create(&myDevice)
-				break
-			}
-
-			myname := <-c2
-			log.Printf("Name NOT found in the Map for MAC: %v", myname.MAC)
-			// Device without mapping
-			myDevice := Device{
-				MAC:  device.MAC,
-				IP:   device.IP,
-				Name: myname.MAC,
-			}
-			database.Database.Db.Create(&myDevice)
-		}
-	}
+	database.Database.Db.Create(&myDevice)
 
 	// Device with no mapping
 	// Add device to DB with MAC mapping
@@ -181,6 +145,36 @@ func IFExist(device string, devices []NetDevice) bool {
 		}
 	}
 	return false
+
+}
+
+func IFMapExist(device string, devices []Mapping) string {
+	c1 := make(chan bool, len(devices))
+	c2 := make(chan string, len(devices))
+	for _, dev := range devices {
+		go func(dev Mapping) {
+			if dev.Mac == device {
+				c1 <- true
+				c2 <- dev.Name
+			} else {
+				c1 <- false
+				c2 <- dev.Mac
+			}
+		}(dev)
+	}
+
+	for i := 0; i < len(devices); i++ {
+		select {
+		case status := <-c1:
+
+			if status {
+				mapped := <-c2
+				return mapped
+			}
+			break
+		}
+	}
+	return device
 
 }
 
