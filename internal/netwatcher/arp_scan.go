@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	"fmt"
 	"log"
 	"net"
 	"time"
@@ -91,12 +90,12 @@ func (a *AppConfig) readARP(handle *pcap.Handle, iface *net.Interface, stop chan
 			// if for example someone else sends US an ARP request.  Doesn't much matter, though...
 			// all information is good information :)
 
-			a.AddDevicesToNetworkMap(arp.SourceProtAddress, arp.SourceHwAddress)
+			//		a.AddDevicesToNetworkMap(arp.SourceProtAddress, arp.SourceHwAddress)
 			a.Lock.Lock()
 			a.MapDevices()
 			a.Lock.Unlock()
 			a.AddDeviceToDb(arp.SourceProtAddress, arp.SourceHwAddress)
-			log.Printf("Added IP %v with MAC %v to DB", fmt.Sprint(arp.SourceHwAddress), fmt.Sprint(arp.SourceHwAddress))
+			// log.Printf("Added IP %v with MAC %v to DB", fmt.Sprint(arp.SourceHwAddress), fmt.Sprint(arp.SourceHwAddress))
 			// log.Printf("IP %v is at %v", net.IP(arp.SourceProtAddress), net.HardwareAddr(arp.SourceHwAddress))
 		}
 	}
