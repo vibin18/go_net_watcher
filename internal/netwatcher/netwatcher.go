@@ -90,9 +90,9 @@ func CheckDeviceExist(device NetDevice) bool {
 	for _, dev := range ExistingDevices {
 		// Check device has same MAC
 
-		log.Printf("Checking for MAC: %v with db mac: %v", device.MAC, dev.MAC)
+		//log.Printf("Checking for MAC: %v with db mac: %v", device.MAC, dev.MAC)
 		if device.MAC == dev.MAC {
-			log.Printf("Device already in DB with MAC : %v", dev.MAC)
+			//log.Printf("Device already in DB with MAC : %v", dev.MAC)
 			// Device has same MAC
 			// Continue to next loop
 
