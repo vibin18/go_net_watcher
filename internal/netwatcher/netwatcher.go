@@ -71,19 +71,26 @@ func (a *AppConfig) AddDeviceToDb(ip net.IP, mac net.HardwareAddr) {
 		// Check device has same MAC
 
 		if dev.MAC == device.MAC {
+			log.Printf("Device already in DB with MAC : %v", dev.MAC)
 			// Device has same MAC
 			// Continue to next loop
+			// TODO
+			// TODO Check if Update works when new mapping is given in the mapping yaml file
+			// Device has a different MAC
+			// Update
+			log.Printf("Ignoring MAC : %v", dev.MAC)
 			break
 		}
 		// Device has a different MAC
 		// Update
 
-		// TODO Check if Update works when new mapping is given in the mapping yaml file
-		database.Database.Db.Update("ID", device)
+		log.Printf("Device NOT found in DB with MAC : %v", dev.MAC)
+		CreateDeviceToDb(device, a.MappedList)
+		//database.Database.Db.Update("ID", &device)
 	}
 
 	//  Device not found with above match
-	CreateDeviceToDb(device, a.MappedList)
+	// CreateDeviceToDb(device, a.MappedList)
 
 }
 
