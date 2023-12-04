@@ -118,7 +118,7 @@ func CreateDeviceToDb(device NetDevice, mappedList []Mapping) {
 					IP:   device.IP,
 					Name: myname,
 				}
-				database.Database.Db.Create(myDevice)
+				database.Database.Db.Create(&myDevice)
 				break
 			}
 			myname := <-c2
@@ -128,7 +128,7 @@ func CreateDeviceToDb(device NetDevice, mappedList []Mapping) {
 				IP:   device.IP,
 				Name: myname,
 			}
-			database.Database.Db.Create(myDevice)
+			database.Database.Db.Create(&myDevice)
 		}
 	}
 
