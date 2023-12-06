@@ -90,18 +90,7 @@ func CheckDeviceExist(device NetDevice) bool {
 	ExistingDevices := []Device{}
 	database.Database.Db.Find(&ExistingDevices)
 	for _, dev := range ExistingDevices {
-		// Check device has same MAC
-
-		//log.Printf("Checking for MAC: %v with db mac: %v", device.MAC, dev.MAC)
 		if device.MAC == dev.MAC {
-			//log.Printf("Device already in DB with MAC : %v", dev.MAC)
-			// Device has same MAC
-			// Continue to next loop
-
-			// TODO Check if Update works when new mapping is given in the mapping yaml file
-			// Device has a different MAC
-			// Update
-
 			return true
 		}
 	}
@@ -192,18 +181,4 @@ func IFMapExist(device string, devices []Mapping) string {
 	log.Printf("Match NOT found for MAC: %v!!!!", device)
 	return device
 
-}
-
-func (a *AppConfig) AddDevicesToNetworkMap(ip net.IP, mac net.HardwareAddr) {
-	if ip == nil {
-		log.Printf("Missing IP!")
-	}
-	if mac == nil {
-		log.Printf("Missing MAC!")
-	}
-	myipString := fmt.Sprint(ip)
-	mymacString := fmt.Sprint(mac)
-	a.Lock.Lock()
-	a.NetworkDeviceMap[mymacString] = myipString
-	a.Lock.Unlock()
 }
