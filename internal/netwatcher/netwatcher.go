@@ -9,6 +9,7 @@ import (
 	"net"
 )
 
+//GetConf populates the MappedList with mapping.yaml
 func (a *AppConfig) GetConf(file string) {
 	yamlFile, err := ioutil.ReadFile(file)
 	if err != nil {
@@ -21,7 +22,7 @@ func (a *AppConfig) GetConf(file string) {
 
 }
 
-// Mapping devices maching the mapping.yaml
+//MapDevices maps devices matching the mapping.yaml
 func (a *AppConfig) MapDevices() {
 	for mac, ip := range a.NetworkDeviceMap {
 		for _, item := range a.MappedList {
