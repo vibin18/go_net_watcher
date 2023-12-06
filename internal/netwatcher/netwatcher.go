@@ -21,6 +21,7 @@ func (a *AppConfig) GetConf(file string) {
 
 }
 
+// Mapping devices maching the mapping.yaml
 func (a *AppConfig) MapDevices() {
 	for mac, ip := range a.NetworkDeviceMap {
 		for _, item := range a.MappedList {
