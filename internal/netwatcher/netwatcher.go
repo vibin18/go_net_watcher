@@ -110,8 +110,6 @@ func CreateDeviceToDb(device NetDevice, mappedList []Mapping) {
 	}
 	database.Database.Db.Create(&myDevice)
 
-	// Device with no mapping
-	// Add device to DB with MAC mapping
 }
 
 func IFExist(device string, devices []NetDevice) bool {
