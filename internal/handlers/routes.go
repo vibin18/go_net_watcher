@@ -46,7 +46,7 @@ loop:
 			if err != nil {
 				log.Println("Writing to response failed")
 			}
-			log.Println("SSE Response written")
+			log.Printf("SSE Response written %s", mydata)
 
 		case <-ctx.Context().Done():
 			log.Println("SSE breaking")
