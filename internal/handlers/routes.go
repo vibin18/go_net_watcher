@@ -56,9 +56,9 @@ func Updater(ctx *fiber.Ctx) error {
 
 				}
 
-			case <-ctx.Context().Done():
-				log.Println("SSE breaking")
-				break loop
+				//case <-ctx.Context().Done():
+				//	log.Println("SSE breaking")
+				//	break loop
 			}
 		}
 	})
