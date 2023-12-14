@@ -27,11 +27,6 @@ func Watcher(ctx *fiber.Ctx) error {
 
 func Updater(ctx *fiber.Ctx) error {
 	log.Println("Received SSE message request")
-	cors.New(cors.Config{
-		AllowOrigins:  "*",
-		ExposeHeaders: "Content-Type",
-	})
-
 	ctx.App().Use(cors.New(cors.Config{
 		AllowOrigins:  "*",
 		ExposeHeaders: "Content-Type",
@@ -45,6 +40,7 @@ loop:
 	for {
 		select {
 		case data := <-app.ComChan:
+			log.Println("Message received")
 			mydata := fmt.Sprintf("event: sse1\ndata: %s\n\n", data)
 			err := ctx.SendString(mydata)
 			if err != nil {
