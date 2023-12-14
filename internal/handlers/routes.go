@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"bufio"
+	"encoding/json"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -47,6 +49,15 @@ loop:
 				log.Println("Writing to response failed")
 			}
 			log.Printf("SSE Response written %s", mydata)
+			ctx.Context().SetBodyStreamWriter(func(w *bufio.Writer) {
+				// Create stream encoder
+				enc := json.NewEncoder(w)
+				// It will flush automatically on every 4KB
+				if err = enc.Encode(data); err != nil {
+					log.Println("Failed to encode")
+				}
+				w.Flush()
+			})
 
 		case <-ctx.Context().Done():
 			log.Println("SSE breaking")
