@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"go_net_watcher/internal/database"
 	"go_net_watcher/internal/netwatcher"
 	"log"
@@ -26,43 +26,42 @@ func Watcher(ctx *fiber.Ctx) error {
 
 func Updater(ctx *fiber.Ctx) error {
 	log.Println("Received SSE message request")
-	ctx.App().Use(cors.New(cors.Config{
-		AllowOrigins:  "*",
-		ExposeHeaders: "Content-Type",
-	}))
+	//ctx.App().Use(cors.New(cors.Config{
+	//	AllowOrigins:  "*",
+	//	ExposeHeaders: "Content-Type",
+	//}))
 	ctx.Set("Access-Control-Allow-Origin", "*")
 	ctx.Set("Access-Control-Expose-Headers", "Content-Type")
 	ctx.Set("Content-Type", "text/event-stream")
 	ctx.Set("Cache-Control", "no-cache")
 	ctx.Set("Connection", "keep-alive")
+	ctx.Set("Transfer-Encoding", "chunked")
 
-loop:
-	for {
-		select {
-		case data := <-app.ComChan:
-			log.Println("Message received")
-			mydata := fmt.Sprintf("event: sse1\ndata: %s\n\n", data)
-			err := ctx.Send([]byte(mydata))
-			if err != nil {
-				log.Println("Writing to response failed")
+	ctx.Context().SetBodyStreamWriter(func(w *bufio.Writer) {
+	loop:
+		for {
+			select {
+			case data := <-app.ComChan:
+				log.Println("Message received")
+				mydata := fmt.Sprintf("event: sse1\ndata: %s\n\n", data)
+				fmt.Fprintf(w, "data: %s\n\n", mydata)
+				err := w.Flush()
+				if err != nil {
+					// Refreshing page in web browser will establish a new
+					// SSE connection, but only (the last) one is alive, so
+					// dead connections must be closed here.
+					log.Printf("Error while flushing: %v. Closing http connection.\n", err)
+
+					break loop
+
+				}
+
+			case <-ctx.Context().Done():
+				log.Println("SSE breaking")
+				break loop
 			}
-			log.Printf("SSE Response written %s", mydata)
-
-			//ctx.Context().SetBodyStreamWriter(func(w *bufio.Writer) {
-			//	// Create stream encoder
-			//	enc := json.NewEncoder(w)
-			//	// It will flush automatically on every 4KB
-			//	if err = enc.Encode(data); err != nil {
-			//		log.Println("Failed to encode")
-			//	}
-			//	w.Flush()
-			//})
-
-		case <-ctx.Context().Done():
-			log.Println("SSE breaking")
-			break loop
 		}
-	}
+	})
 	return nil
 }
 
