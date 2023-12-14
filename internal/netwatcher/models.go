@@ -28,6 +28,7 @@ type AppConfig struct {
 	Lock             *sync.Mutex
 	MappedList       []Mapping
 	FinalMap         []NetDevice
+	ComChan          chan []byte
 }
 
 func NewAppConfig(a *AppConfig) *AppConfig {

@@ -42,6 +42,7 @@ func main() {
 		MappedList:       make([]netwatcher.Mapping, 0),
 		FinalMap:         []netwatcher.NetDevice{},
 		Lock:             &lock,
+		ComChan:          make(chan []byte),
 	}
 	myapp := netwatcher.NewAppConfig(app)
 	app.GetConf(arg.MapFile)
@@ -57,6 +58,7 @@ func main() {
 	web.Get("/", handlers.Home)
 	web.Get("/watcher", handlers.Watcher)
 	web.Get("/dblist", handlers.DbList)
+	web.Get("/update", handlers.Updater)
 	log.Fatal(web.Listen(":3000"))
 
 }
