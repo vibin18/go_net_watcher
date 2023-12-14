@@ -19,15 +19,17 @@
 <!--                    <a hx-get="/watcher" hx-target="#ftable" hx-trigger="every 1s" hx-swap="innerHTML" class="nav-link active" aria-current="page" href="#" >List</a>-->
 <!--                </li>-->
                 <li class="nav-item">
-                    <a hx-get="/dblist" hx-target="#ftable" hx-swap="innerHTML" class="nav-link active" aria-current="page" href="#" >DbList</a>
+                    <a >DbList</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 <div class="container align-items-center" id="ftable">
-
-
+    <div hx-ext="sse" sse-connect="/updater" >
+        <div hx-get="/dblist" hx-trigger="sse:sse1">
+        </div>
+    </div>
 </div>
 <script src="https://unpkg.com/htmx.org@1.9.8" integrity="sha384-rgjA7mptc2ETQqXoYC3/zJvkU7K/aP44Y+z7xQuJiVnB/422P/Ak+F/AqFR7E4Wr" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
