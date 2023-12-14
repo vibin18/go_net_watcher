@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	_ "github.com/gofiber/fiber/v2/middleware/cors"
 	"go_net_watcher/internal/database"
 	"go_net_watcher/internal/netwatcher"
@@ -26,11 +27,15 @@ func Watcher(ctx *fiber.Ctx) error {
 
 func Updater(ctx *fiber.Ctx) error {
 	log.Println("Received SSE message request")
-	//cors.New(cors.Config{
-	//	AllowOrigins:  "*",
-	//	ExposeHeaders: "Content-Type",
-	//
-	//})
+	cors.New(cors.Config{
+		AllowOrigins:  "*",
+		ExposeHeaders: "Content-Type",
+	})
+
+	ctx.App().Use(cors.New(cors.Config{
+		AllowOrigins:  "*",
+		ExposeHeaders: "Content-Type",
+	}))
 	ctx.Set("Access-Control-Allow-Origin", "*")
 	ctx.Set("Access-Control-Expose-Headers", "Content-Type")
 	ctx.Set("Content-Type", "text/event-stream")
