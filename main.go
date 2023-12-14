@@ -58,7 +58,7 @@ func main() {
 	web.Get("/", handlers.Home)
 	web.Get("/watcher", handlers.Watcher)
 	web.Get("/dblist", handlers.DbList)
-	web.Get("/update", handlers.Updater)
+	web.Get("/updater", handlers.Updater)
 	log.Fatal(web.Listen(":3000"))
 
 }
