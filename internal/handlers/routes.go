@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	_ "github.com/gofiber/fiber/v2/middleware/cors"
 	"go_net_watcher/internal/database"
 	"go_net_watcher/internal/netwatcher"
 	"log"
-	"net/http"
 )
 
 var app *netwatcher.AppConfig
@@ -37,7 +35,6 @@ func Updater(ctx *fiber.Ctx) error {
 	ctx.Set("Content-Type", "text/event-stream")
 	ctx.Set("Cache-Control", "no-cache")
 	ctx.Set("Connection", "keep-alive")
-	var flusher http.Flusher
 
 loop:
 	for {
@@ -45,12 +42,11 @@ loop:
 		case data := <-app.ComChan:
 			log.Println("Message received")
 			mydata := fmt.Sprintf("event: sse1\ndata: %s\n\n", data)
-			err := ctx.SendString(mydata)
+			err := ctx.Send([]byte(mydata))
 			if err != nil {
 				log.Println("Writing to response failed")
 			}
 			log.Printf("SSE Response written %s", mydata)
-			flusher.Flush()
 
 			//ctx.Context().SetBodyStreamWriter(func(w *bufio.Writer) {
 			//	// Create stream encoder
