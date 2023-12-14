@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/valyala/fasthttp"
 	"go_net_watcher/internal/database"
 	"go_net_watcher/internal/netwatcher"
 	"log"
@@ -37,7 +38,7 @@ func Updater(ctx *fiber.Ctx) error {
 	ctx.Set("Connection", "keep-alive")
 	ctx.Set("Transfer-Encoding", "chunked")
 
-	ctx.Context().SetBodyStreamWriter(func(w *bufio.Writer) {
+	ctx.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
 	loop:
 		for {
 			select {
@@ -45,6 +46,7 @@ func Updater(ctx *fiber.Ctx) error {
 				log.Println("Message received")
 				mydata := fmt.Sprintf("event: sse1\ndata: %s\n\n", data)
 				fmt.Fprintf(w, "data: %s\n\n", mydata)
+				fmt.Println(mydata)
 				err := w.Flush()
 				if err != nil {
 					// Refreshing page in web browser will establish a new
@@ -61,7 +63,7 @@ func Updater(ctx *fiber.Ctx) error {
 				//	break loop
 			}
 		}
-	})
+	}))
 	return nil
 }
 
