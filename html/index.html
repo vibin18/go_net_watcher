@@ -25,9 +25,13 @@
         </div>
     </div>
 </nav>
-<div class="container align-items-center" id="ftable">
-    <div hx-ext="sse" sse-connect="/updater" >
-        <div hx-get="/dblist" hx-trigger="sse:sse1">
+<div class="container align-items-center">
+    <div class="col-6 p-5">
+        <div class="row-2">
+            <div hx-ext="sse" sse-connect="/updater" >
+                <div hx-get="/dblist" hx-trigger="sse:sse1">
+                </div>
+            </div>
         </div>
     </div>
 </div>
