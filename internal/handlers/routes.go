@@ -45,7 +45,7 @@ func Updater(ctx *fiber.Ctx) error {
 			case data := <-app.ComChan:
 				log.Println("Message received")
 				mydata := fmt.Sprintf("event: sse1\ndata: %s\n\n", data)
-				fmt.Fprintf(w, "data: %s\n\n", mydata)
+				fmt.Fprintf(w, mydata)
 				fmt.Println(mydata)
 				err := w.Flush()
 				if err != nil {
