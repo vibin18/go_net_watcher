@@ -46,8 +46,10 @@ loop:
 			if err != nil {
 				log.Println("Writing to response failed")
 			}
+			log.Println("SSE Response written")
 
 		case <-ctx.Context().Done():
+			log.Println("SSE breaking")
 			break loop
 		}
 	}
